@@ -7,11 +7,17 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+
+# Build output
 dist
 dist-ssr
 *-dist
+
+# Environment
 *.local
+.env
 
 # Editor directories and files
 .vscode/*
@@ -24,43 +30,13 @@ dist-ssr
 *.sln
 *.sw?
 
-.env
-**/agent-eval-report*
-packages
-pids
+# Spark workbench
+.spark-workbench-id
 .file-manifest
 .devcontainer/
 
-.spark-workbench-id
+# Temporary files
+packages
+pids
+**/agent-eval-report*
 
-# Generated files from installer
-URUCHOM_APLIKACJE.bat
-uruchom.sh
-
-# Deprecated installation files (keep only INSTALUJ_TUTAJ.bat and URUCHOM.bat)
-install.bat
-install.sh
-wdroz.sh
-INSTALUJ.bat
-WDROZ.bat
-MENU_WDROZENIA.bat
-STATUS.bat
-DOKUMENTACJA.bat
-START.bat
-
-# Niepotrzebne pliki instrukcyjne
-CZYTAJ_MNIE.txt
-CZYTAJ_MNIE_NAJPIERW.txt
-FAQ.txt
-INSTALACJA_UZYTKOWNIKA.md
-INSTALATOR.md
-INSTRUKCJA_GRAFICZNA.txt
-INSTRUKCJA_INSTALACJI.md
-LISTA_KONTROLNA.txt
-README-WDROZENIE.txt
-README_PL.md
-README_WINDOWS.txt
-SZYBKIE_WDROZENIE.txt
-WDROZENIE.md
-WITAJ.txt
-ZACZNIJ_TUTAJ.txt
