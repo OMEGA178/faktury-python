@@ -40,3 +40,4 @@ packages
 pids
 **/agent-eval-report*
 
+.vite/

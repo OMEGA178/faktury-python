@@ -23,19 +23,18 @@
 
 ### 🪟 **Windows 10/11**
 
-#### ⚡ Metoda 1: Automatyczna instalacja (ZALECANE)
+#### ⚡ Automatyczna instalacja (ZALECANE)
 1. Pobierz repozytorium jako ZIP i rozpakuj
-2. Kliknij prawym przyciskiem na **`INSTALUJ.bat`**
-3. Wybierz **"Uruchom jako administrator"**
-4. Skrót pojawi się na pulpicie
+2. Kliknij 2x na **`INSTALUJ.bat`**
+3. Postępuj według instrukcji
 
 Instalator automatycznie:
-- ✅ Sprawdzi i zainstaluje Node.js (jeśli potrzeba)
-- ✅ Zainstaluje wszystkie zależności
-- ✅ Utworzy skrót na pulpicie
-- ✅ Doda folder do wyjątków Windows Defender
+- ✅ Sprawdzi curl (wbudowany w Windows 10/11)
+- ✅ Sprawdzi i zainstaluje Node.js (jeśli potrzeba - otwiera stronę pobierania)
+- ✅ Zainstaluje wszystkie zależności npm
+- ✅ Uruchomi aplikację w przeglądarce
 
-#### 📝 Metoda 2: Ręczna instalacja
+#### 📝 Ręczna instalacja
 ```cmd
 # 1. Zainstaluj Node.js LTS z https://nodejs.org/
 # 2. Otwórz CMD w folderze aplikacji
@@ -49,11 +48,29 @@ npm run dev
 
 ### 🍎 **macOS (Ventura, Sonoma i nowsze)**
 
-#### Wymagania:
+#### ⚡ Automatyczna instalacja (ZALECANE)
+1. Pobierz repozytorium jako ZIP i rozpakuj
+2. Otwórz Terminal w folderze aplikacji (PPM → "Nowy terminal w folderze")
+3. Uruchom:
+```bash
+chmod +x instaluj-macos.sh
+./instaluj-macos.sh
+```
+
+Instalator automatycznie:
+- ✅ Sprawdzi curl (wbudowany w macOS)
+- ✅ Zainstaluje Homebrew (jeśli nie ma)
+- ✅ Zainstaluje Node.js przez Homebrew
+- ✅ Zainstaluje wszystkie zależności npm
+- ✅ Uruchomi aplikację w przeglądarce
+
+#### 📝 Ręczna instalacja
+
+**Wymagania:**
 - macOS 12.0 lub nowszy
 - 4GB RAM (zalecane 8GB)
 
-#### Instalacja:
+**Komendy:**
 
 ```bash
 # 1. Zainstaluj Homebrew (jeśli nie masz)
@@ -77,7 +94,25 @@ npm run dev
 
 ### 🐧 **Linux (Ubuntu, Debian, Fedora, Arch)**
 
-#### Ubuntu/Debian:
+#### ⚡ Automatyczna instalacja (ZALECANE)
+1. Pobierz repozytorium jako ZIP i rozpakuj
+2. Otwórz Terminal w folderze aplikacji
+3. Uruchom:
+```bash
+chmod +x instaluj-linux.sh
+./instaluj-linux.sh
+```
+
+Instalator automatycznie:
+- ✅ Wykryje dystrybucję Linux (Debian/Ubuntu/Fedora/Arch)
+- ✅ Zainstaluje curl (jeśli nie ma)
+- ✅ Sprawdzi Node.js (wyświetli instrukcje instalacji jeśli nie ma)
+- ✅ Zainstaluje wszystkie zależności npm
+- ✅ Uruchomi aplikację w przeglądarce
+
+#### 📝 Ręczna instalacja
+
+**Ubuntu/Debian:**
 ```bash
 # 1. Zainstaluj Node.js
 sudo apt update
@@ -88,14 +123,14 @@ npm install
 npm run dev
 ```
 
-#### Fedora:
+**Fedora:**
 ```bash
 sudo dnf install nodejs npm
 npm install
 npm run dev
 ```
 
-#### Arch Linux:
+**Arch Linux:**
 ```bash
 sudo pacman -S nodejs npm
 npm install
