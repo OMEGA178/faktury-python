@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Plus, Warning, Image, Package, X, Phone, MapPin, Calendar, User } from '@phosphor-icons/react'
 import { validateNIP, formatNIP, calculateDistance } from '@/lib/utils'
+import { compressImage } from '@/lib/image-compression'
 import { toast } from 'sonner'
 import { Location, Driver } from '@/lib/types'
 
@@ -73,32 +74,44 @@ export function AddInvoiceDialog({ open, onOpenChange, onAdd, existingNIPs, driv
     }
   }
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'invoice' | 'cargo') => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'invoice' | 'cargo') => {
     const files = e.target.files
     if (!files) return
 
-    Array.from(files).forEach(file => {
+    const fileArray = Array.from(files)
+    
+    // Walidacja plików
+    for (const file of fileArray) {
       if (!file.type.startsWith('image/')) {
         toast.error('Można dodać tylko pliki graficzne')
         return
       }
 
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error('Plik jest za duży (max 5MB)')
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error(`Plik ${file.name} jest za duży (max 10MB)`)
         return
       }
+    }
 
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        const base64 = event.target?.result as string
-        if (type === 'invoice') {
-          setInvoiceImages(prev => [...prev, base64])
-        } else {
-          setCargoImages(prev => [...prev, base64])
-        }
+    // Kompresja wszystkich obrazów
+    toast.loading(`Kompresowanie ${fileArray.length} zdjęć...`)
+    
+    try {
+      const compressedImageIds = await Promise.all(
+        fileArray.map(file => compressImage(file))
+      )
+      
+      if (type === 'invoice') {
+        setInvoiceImages(prev => [...prev, ...compressedImageIds])
+      } else {
+        setCargoImages(prev => [...prev, ...compressedImageIds])
       }
-      reader.readAsDataURL(file)
-    })
+      
+      toast.success(`Dodano ${fileArray.length} zdjęć (skompresowane)`)
+    } catch (error) {
+      console.error('Błąd kompresji obrazów:', error)
+      toast.error('Nie udało się przetworzyć zdjęć')
+    }
   }
 
   const removeImage = (index: number, type: 'invoice' | 'cargo') => {

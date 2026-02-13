@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { CheckCircle, Clock, Buildings, Calendar, TrendUp, TrendDown, Image, Package, Phone, PencilSimple, MapPin, NavigationArrow, User, GasPump, CurrencyCircleDollar } from '@phosphor-icons/react'
 import { Invoice, Driver, FuelEntry, Vehicle } from '@/lib/types'
 import { formatCurrency, formatDate, formatNIP, formatPhoneNumber, isOverdue, calculateTripCostPerKm } from '@/lib/utils'
+import { resolveMultipleImageUrls } from '@/lib/image-compression'
 import { motion } from 'framer-motion'
 import { ImagePreviewDialog } from './ImagePreviewDialog'
 import { useState, useMemo } from 'react'
@@ -85,8 +86,9 @@ export function InvoiceCard({ invoice, onMarkAsPaid, onViewDetails, onEdit, show
     })
   }, [invoice.amount, invoice.calculatedDistance, fuelCostForTrip, assignedDriver?.dailyCost, invoice.paymentTerm])
 
-  const handleImageClick = (images: string[], title: string) => {
-    setPreviewImages(images)
+  const handleImageClick = (imageIds: string[], title: string) => {
+    const imageUrls = resolveMultipleImageUrls(imageIds)
+    setPreviewImages(imageUrls)
     setPreviewTitle(title)
     setImagePreviewOpen(true)
   }
