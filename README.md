@@ -23,21 +23,23 @@
 
 ### 🪟 **Windows 10/11**
 
-#### Metoda 1: Automatyczna instalacja (ZALECANE)
-1. Pobierz repozytorium jako ZIP
-2. Rozpakuj folder
-3. Kliknij prawym przyciskiem na **`INSTALUJ.bat`**
-4. Wybierz **"Uruchom jako administrator"**
-5. Postępuj według instrukcji na ekranie
+#### ⚡ Metoda 1: Prosty instalator (ZALECANE - bez administratora)
+1. Pobierz repozytorium jako ZIP i rozpakuj
+2. **Kliknij 2x na `INSTALUJ_PROSTY.bat`**
+3. Postępuj według instrukcji
 
-Instalator automatycznie:
-- ✅ Doda folder do wyjątków Windows Defender
-- ✅ Sprawdzi i zainstaluje Node.js (jeśli potrzebne)
-- ✅ Zainstaluje wszystkie zależności
-- ✅ Utworzy skrót na pulpicie
-- ✅ Uruchomi aplikację
+**Instalator NIE wymaga uprawnień administratora i jest bezpieczniejszy.**
 
-#### Metoda 2: Ręczna instalacja
+#### 🛡️ Metoda 2: Instalator z ochroną (wymaga administratora)
+1. Pobierz repozytorium jako ZIP i rozpakuj
+2. Kliknij prawym przyciskiem na **`INSTALUJ.bat`**
+3. Wybierz **"Uruchom jako administrator"**
+4. Postępuj według instrukcji
+
+Instalator z administratorem dodatkowo:
+- ✅ Doda folder do wyjątków Windows Defender (zabezpieczenie)
+
+#### 📝 Metoda 3: Ręczna instalacja
 ```cmd
 # 1. Zainstaluj Node.js LTS z https://nodejs.org/
 # 2. Otwórz CMD w folderze aplikacji
