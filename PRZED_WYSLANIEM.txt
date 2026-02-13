@@ -1,0 +1,56 @@
+================================================
+  GADOWSKI - LISTA PLIKOW DO USUNIECIA
+  PRZED WYSLANIEM DO SPEDYTORA
+================================================
+
+Ten plik zawiera liste niepotzebnych plikow ktore mozna usunac
+przed wyslaniem aplikacji do spedytora.
+
+UWAGA: Te pliki nie sa potrzebne do dzialania aplikacji!
+
+
+PLIKI DO USUNIECIA (instrukcje i dokumentacja):
+------------------------------------------------
+
+1. CZYTAJ_MNIE.txt
+2. CZYTAJ_MNIE_NAJPIERW.txt
+3. FAQ.txt
+4. INSTALACJA_UZYTKOWNIKA.md
+5. INSTALATOR.md
+6. INSTRUKCJA_GRAFICZNA.txt
+7. INSTRUKCJA_INSTALACJI.md
+8. LISTA_KONTROLNA.txt
+9. README-WDROZENIE.txt
+10. README_PL.md
+11. README_WINDOWS.txt
+12. SZYBKIE_WDROZENIE.txt
+13. WDROZENIE.md
+14. WITAJ.txt
+15. ZACZNIJ_TUTAJ.txt
+16. PRZED_WYSLANIEM.txt (ten plik rowniez!)
+17. src/README_DEVELOPER.md
+18. src/lib/sample-data.ts
+19. src/lib/sample-data-60days.ts
+
+
+PLIKI KTORYCH NIE WOLNO USUWAC:
+---------------------------------
+
+- INSTALUJ_TUTAJ.bat (GLOWNY INSTALATOR!)
+- URUCHOM.bat (URUCHAMIANIE APLIKACJI!)
+- WYSLIJ_DO_REPO.bat (aktualizacja na GitHub)
+- README.md (opis projektu na GitHub)
+- package.json (konfiguracja projektu)
+- wszystkie pliki w folderze src/ (oprócz README_DEVELOPER.md)
+- wszystkie pliki .json, .ts, .tsx, .css
+
+
+================================================
+JAK USUNAC PLIKI:
+================================================
+
+Zaznacz wszystkie pliki z powyzszej listy i wcisnij DELETE.
+Aplikacja nadal bedzie dzialac poprawnie!
+
+
+================================================

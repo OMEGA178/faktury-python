@@ -1,0 +1,65 @@
+================================================
+  GADOWSKI - SYSTEM FAKTUR
+  INSTRUKCJA INSTALACJI
+================================================
+
+KROK 1: INSTALACJA
+------------------
+
+1. Znajdz plik: INSTALUJ_TUTAJ.bat
+
+2. Kliknij PRAWYM przyciskiem myszy na ten plik
+
+3. Wybierz: "Uruchom jako administrator"
+
+4. Poczekaj 3-5 minut - instalator zrobi wszystko automatycznie:
+   - Zainstaluje Node.js (jezeli nie masz)
+   - Zainstaluje wszystkie zaleznosci
+   - Usunie niepotrzebne pliki instrukcyjne
+   - Utworzy skrot na pulpicie
+   - Uruchomi aplikacje
+
+5. GOTOWE!
+
+
+KROK 2: URUCHAMIANIE (kazdy kolejny raz)
+-----------------------------------------
+
+OPCJA A - NAJLATWIEJSZA:
+Kliknij dwukrotnie na skrot na pulpicie:
+"Gadowski System Faktur"
+
+OPCJA B - Z FOLDERU:
+Uruchom plik: URUCHOM.bat
+
+
+WAZNE PODCZAS PRACY:
+---------------------
+
+- NIE ZAMYKAJ czarnego okna (konsoli) podczas pracy
+- To okno to serwer - zamkniecie = zamkniecie aplikacji
+- Aplikacja dziala w przegladarce
+- Mozesz miec wiele zakladek otwartych z aplikacja
+
+
+WYMAGANIA SYSTEMOWE:
+--------------------
+
+- System: Windows 10 lub nowszy
+- Preglalarka: Chrome, Edge, Firefox (najnowsza wersja)
+- Polaczenie z internetem (tylko do instalacji)
+
+
+POMOC:
+------
+
+Jezeli masz problemy z instalacja:
+1. Upewnij sie ze uruchomiles instalator jako administrator
+2. Sprawdz polaczenie z internetem
+3. Sprobuj ponownie uruchomic INSTALUJ_TUTAJ.bat
+
+
+================================================
+System Gadowski v2.0
+Profesjonalny system zarzadzania fakturami
+================================================
