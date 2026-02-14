@@ -14,6 +14,7 @@ from gui.dialogs.add_driver_dialog import AddDriverDialog
 from gui.dialogs.add_fuel_dialog import AddFuelDialog
 from gui.components.notification_banner import NotificationBanner
 from gui.components.financial_summary import FinancialSummary
+from services.export_service import ExportService
 import config
 
 
@@ -30,6 +31,9 @@ class MainWindow(ctk.CTk):
         
         # Database
         self.db = Database()
+        
+        # Services
+        self.export_service = ExportService()
         
         # State
         self.current_tab = "outstanding"
@@ -128,6 +132,24 @@ class MainWindow(ctk.CTk):
         # Quick actions on right
         actions_frame = ctk.CTkFrame(header, fg_color="transparent")
         actions_frame.pack(side="right", padx=20)
+        
+        ctk.CTkButton(
+            actions_frame,
+            text="📥 Eksport PDF",
+            command=self.export_pdf,
+            fg_color=config.COLORS["info"],
+            hover_color="#2196F3CC",
+            width=140
+        ).pack(side="left", padx=5)
+        
+        ctk.CTkButton(
+            actions_frame,
+            text="📊 Eksport CSV",
+            command=self.export_csv,
+            fg_color=config.COLORS["success"],
+            hover_color="#66BB6A",
+            width=140
+        ).pack(side="left", padx=5)
         
         ctk.CTkButton(
             actions_frame,
@@ -778,6 +800,38 @@ class MainWindow(ctk.CTk):
             self.load_data()
             self.show_tab(self.current_tab)
             messagebox.showinfo("Sukces", "Faktura usunięta!")
+    
+    def export_pdf(self):
+        """Export invoices to PDF"""
+        try:
+            filepath = self.export_service.export_invoices_pdf(self.invoices)
+            messagebox.showinfo("Sukces", f"Eksport PDF zapisany:\n{filepath}")
+        except Exception as e:
+            messagebox.showerror("Błąd", f"Nie udało się wyeksportować PDF:\n{str(e)}")
+    
+    def export_csv(self):
+        """Export current tab data to CSV"""
+        try:
+            if self.current_tab in ["outstanding", "paid"]:
+                # Export invoices
+                invoices_to_export = self.invoices
+                if self.current_tab == "outstanding":
+                    invoices_to_export = [inv for inv in self.invoices if not inv.get('is_paid', False)]
+                elif self.current_tab == "paid":
+                    invoices_to_export = [inv for inv in self.invoices if inv.get('is_paid', False)]
+                
+                filepath = self.export_service.export_invoices_csv(invoices_to_export)
+            elif self.current_tab == "fuel":
+                filepath = self.export_service.export_fuel_entries_csv(self.fuel_entries)
+            elif self.current_tab == "drivers":
+                filepath = self.export_service.export_drivers_csv(self.drivers)
+            else:
+                # Default to all invoices
+                filepath = self.export_service.export_invoices_csv(self.invoices)
+            
+            messagebox.showinfo("Sukces", f"Eksport CSV zapisany:\n{filepath}")
+        except Exception as e:
+            messagebox.showerror("Błąd", f"Nie udało się wyeksportować CSV:\n{str(e)}")
             
     def on_closing(self):
         """Handle window close"""
