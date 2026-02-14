@@ -8,6 +8,10 @@ from tkinter import messagebox
 from datetime import datetime
 from database.db import Database
 from database.models import Invoice, Driver, FuelEntry, Vehicle
+from gui.dialogs.add_invoice_dialog import AddInvoiceDialog
+from gui.dialogs.edit_invoice_dialog import EditInvoiceDialog
+from gui.components.notification_banner import NotificationBanner
+from gui.components.financial_summary import FinancialSummary
 import config
 
 
@@ -46,7 +50,14 @@ class MainWindow(ctk.CTk):
         # Header
         self.create_header(main_frame)
         
-        # Stats cards
+        # Notification Banner
+        self.notification_banner = NotificationBanner(main_frame)
+        
+        # Financial Summary (6 cards)
+        self.financial_summary = FinancialSummary(main_frame, height=260)
+        self.financial_summary.pack(fill="x", padx=20, pady=(20, 10))
+        
+        # Stats cards (4 cards - simpler stats)
         self.create_stats(main_frame)
         
         # Tab navigation
@@ -456,6 +467,12 @@ class MainWindow(ctk.CTk):
         self.fuel_entries = self.db.get_fuel_entries()
         self.vehicles = self.db.get_vehicles()
         self.update_stats()
+        self.update_components()
+    
+    def update_components(self):
+        """Update notification banner and financial summary"""
+        self.notification_banner.update(self.invoices)
+        self.financial_summary.update(self.invoices, self.fuel_entries)
         
     def update_stats(self):
         """Update statistics cards"""
@@ -484,7 +501,14 @@ class MainWindow(ctk.CTk):
         
     def add_invoice_clicked(self):
         """Handle add invoice button click"""
-        messagebox.showinfo("Dodaj Fakturę", "Dialog dodawania faktury - w trakcie implementacji")
+        dialog = AddInvoiceDialog(self, self.on_invoice_added)
+    
+    def on_invoice_added(self, invoice: Invoice):
+        """Callback when invoice is added"""
+        self.db.add_invoice(invoice)
+        self.load_data()
+        self.show_tab(self.current_tab)
+        messagebox.showinfo("Sukces", "Faktura dodana pomyślnie!")
         
     def mark_as_paid(self, invoice):
         """Mark invoice as paid"""
@@ -498,9 +522,18 @@ class MainWindow(ctk.CTk):
         
         messagebox.showinfo("Sukces", "Faktura oznaczona jako opłacona!")
         
-    def edit_invoice(self, invoice):
+    def edit_invoice(self, invoice_dict):
         """Edit invoice"""
-        messagebox.showinfo("Edytuj", f"Edycja faktury {invoice.get('company_name')} - w trakcie implementacji")
+        # Convert dict to Invoice object
+        invoice = Invoice(**invoice_dict)
+        dialog = EditInvoiceDialog(self, invoice, self.on_invoice_edited)
+    
+    def on_invoice_edited(self, invoice: Invoice):
+        """Callback when invoice is edited"""
+        self.db.update_invoice(invoice.id, invoice)
+        self.load_data()
+        self.show_tab(self.current_tab)
+        messagebox.showinfo("Sukces", "Faktura zaktualizowana!")
         
     def delete_invoice(self, invoice):
         """Delete invoice"""
