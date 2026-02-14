@@ -10,6 +10,8 @@ from database.db import Database
 from database.models import Invoice, Driver, FuelEntry, Vehicle
 from gui.dialogs.add_invoice_dialog import AddInvoiceDialog
 from gui.dialogs.edit_invoice_dialog import EditInvoiceDialog
+from gui.dialogs.add_driver_dialog import AddDriverDialog
+from gui.dialogs.add_fuel_dialog import AddFuelDialog
 from gui.components.notification_banner import NotificationBanner
 from gui.components.financial_summary import FinancialSummary
 import config
@@ -417,33 +419,267 @@ class MainWindow(ctk.CTk):
         
     def show_fuel_entries(self):
         """Show fuel entries tab"""
+        # Clear content
+        for widget in self.content_frame.winfo_children():
+            widget.destroy()
+        
+        # Header with add button
+        header = ctk.CTkFrame(self.content_frame, fg_color="transparent")
+        header.pack(fill="x", pady=(0, 15))
+        
+        ctk.CTkLabel(
+            header,
+            text="⛽ Tankowania",
+            font=("Arial", 20, "bold"),
+            text_color=config.COLORS["text_primary"]
+        ).pack(side="left")
+        
+        ctk.CTkButton(
+            header,
+            text="➕ Dodaj Tankowanie",
+            command=self.add_fuel_clicked,
+            fg_color=config.COLORS["success"],
+            hover_color="#66BB6A",
+            width=180
+        ).pack(side="right")
+        
+        # Scrollable list
         scroll_frame = ctk.CTkScrollableFrame(
             self.content_frame,
             fg_color=config.COLORS["bg_primary"]
         )
         scroll_frame.pack(fill="both", expand=True)
         
+        # Show fuel entries
+        if not self.fuel_entries:
+            ctk.CTkLabel(
+                scroll_frame,
+                text="Brak wpisów tankowania\nDodaj pierwszy wpis klikając przycisk powyżej",
+                font=("Arial", 14),
+                text_color=config.COLORS["text_secondary"]
+            ).pack(pady=50)
+        else:
+            for fuel in sorted(self.fuel_entries, key=lambda x: x.get('date', ''), reverse=True):
+                self.create_fuel_card(scroll_frame, fuel)
+    
+    def create_fuel_card(self, parent, fuel: dict):
+        """Create a fuel entry card"""
+        card = ctk.CTkFrame(
+            parent,
+            fg_color=config.COLORS["bg_secondary"],
+            corner_radius=8,
+            border_width=1,
+            border_color=config.COLORS["border"]
+        )
+        card.pack(fill="x", padx=0, pady=5)
+        
+        # Content
+        content = ctk.CTkFrame(card, fg_color="transparent")
+        content.pack(fill="x", padx=15, pady=12)
+        
+        # Left: Info
+        left = ctk.CTkFrame(content, fg_color="transparent")
+        left.pack(side="left", fill="x", expand=True)
+        
+        # Date and station
+        try:
+            fuel_date = datetime.fromisoformat(fuel.get('date', '')).strftime("%d.%m.%Y")
+        except:
+            fuel_date = "N/A"
+        
         ctk.CTkLabel(
-            scroll_frame,
-            text="Tab Tankowania - W trakcie implementacji",
-            font=("Arial", 18),
+            left,
+            text=f"📅 {fuel_date} • {fuel.get('station', 'N/A')}",
+            font=("Arial", 14, "bold"),
+            text_color=config.COLORS["text_primary"]
+        ).pack(anchor="w")
+        
+        # Amount and liters
+        ctk.CTkLabel(
+            left,
+            text=f"⛽ {fuel.get('liters', 0):.2f} L • {fuel.get('amount', 0):.2f} PLN",
+            font=("Arial", 12),
             text_color=config.COLORS["text_secondary"]
-        ).pack(pady=50)
+        ).pack(anchor="w", pady=(5, 0))
+        
+        # Notes if any
+        if fuel.get('notes'):
+            ctk.CTkLabel(
+                left,
+                text=f"📝 {fuel.get('notes')}",
+                font=("Arial", 11),
+                text_color=config.COLORS["text_subtle"]
+            ).pack(anchor="w", pady=(5, 0))
+        
+        # Right: Actions
+        actions = ctk.CTkFrame(content, fg_color="transparent")
+        actions.pack(side="right")
+        
+        ctk.CTkButton(
+            actions,
+            text="Usuń",
+            command=lambda f=fuel: self.delete_fuel(f),
+            fg_color=config.COLORS["error"],
+            hover_color=config.COLORS["error"] + "CC",
+            width=100,
+            height=32
+        ).pack()
+    
+    def add_fuel_clicked(self):
+        """Handle add fuel button click"""
+        dialog = AddFuelDialog(self, self.drivers, self.vehicles, self.on_fuel_added)
+    
+    def on_fuel_added(self, fuel: FuelEntry):
+        """Callback when fuel is added"""
+        self.db.add_fuel_entry(fuel)
+        self.load_data()
+        self.show_tab(self.current_tab)
+        messagebox.showinfo("Sukces", "Tankowanie dodane!")
+    
+    def delete_fuel(self, fuel: dict):
+        """Delete fuel entry"""
+        if messagebox.askyesno("Potwierdź", "Czy na pewno usunąć ten wpis tankowania?"):
+            self.db.delete_fuel_entry(fuel['id'])
+            self.load_data()
+            self.show_tab(self.current_tab)
+            messagebox.showinfo("Sukces", "Tankowanie usunięte!")
         
     def show_drivers(self):
         """Show drivers tab"""
+        # Clear content
+        for widget in self.content_frame.winfo_children():
+            widget.destroy()
+        
+        # Header with add button
+        header = ctk.CTkFrame(self.content_frame, fg_color="transparent")
+        header.pack(fill="x", pady=(0, 15))
+        
+        ctk.CTkLabel(
+            header,
+            text="🚛 Kierowcy",
+            font=("Arial", 20, "bold"),
+            text_color=config.COLORS["text_primary"]
+        ).pack(side="left")
+        
+        ctk.CTkButton(
+            header,
+            text="➕ Dodaj Kierowcę",
+            command=self.add_driver_clicked,
+            fg_color=config.COLORS["success"],
+            hover_color="#66BB6A",
+            width=180
+        ).pack(side="right")
+        
+        # Scrollable list
         scroll_frame = ctk.CTkScrollableFrame(
             self.content_frame,
             fg_color=config.COLORS["bg_primary"]
         )
         scroll_frame.pack(fill="both", expand=True)
         
+        # Show drivers
+        if not self.drivers:
+            ctk.CTkLabel(
+                scroll_frame,
+                text="Brak kierowców\nDodaj pierwszego kierowcę klikając przycisk powyżej",
+                font=("Arial", 14),
+                text_color=config.COLORS["text_secondary"]
+            ).pack(pady=50)
+        else:
+            for driver in sorted(self.drivers, key=lambda x: x.get('name', '')):
+                self.create_driver_card(scroll_frame, driver)
+    
+    def create_driver_card(self, parent, driver: dict):
+        """Create a driver card"""
+        card = ctk.CTkFrame(
+            parent,
+            fg_color=config.COLORS["bg_secondary"],
+            corner_radius=8,
+            border_width=1,
+            border_color=config.COLORS["border"]
+        )
+        card.pack(fill="x", padx=0, pady=5)
+        
+        # Content
+        content = ctk.CTkFrame(card, fg_color="transparent")
+        content.pack(fill="x", padx=15, pady=12)
+        
+        # Left: Info
+        left = ctk.CTkFrame(content, fg_color="transparent")
+        left.pack(side="left", fill="x", expand=True)
+        
+        # Name
         ctk.CTkLabel(
-            scroll_frame,
-            text="Tab Kierowcy - W trakcie implementacji",
-            font=("Arial", 18),
+            left,
+            text=f"👤 {driver.get('name', 'N/A')}",
+            font=("Arial", 16, "bold"),
+            text_color=config.COLORS["text_primary"]
+        ).pack(anchor="w")
+        
+        # Phone
+        ctk.CTkLabel(
+            left,
+            text=f"📞 {driver.get('phone', 'N/A')}",
+            font=("Arial", 12),
             text_color=config.COLORS["text_secondary"]
-        ).pack(pady=50)
+        ).pack(anchor="w", pady=(5, 0))
+        
+        # Vehicle info
+        if driver.get('car_brand') or driver.get('registration_number'):
+            car_info = ""
+            if driver.get('car_brand'):
+                car_info += f"🚗 {driver.get('car_brand', '')}"
+            if driver.get('registration_number'):
+                car_info += f" • 🔖 {driver.get('registration_number', '')}"
+            
+            ctk.CTkLabel(
+                left,
+                text=car_info,
+                font=("Arial", 11),
+                text_color=config.COLORS["text_subtle"]
+            ).pack(anchor="w", pady=(5, 0))
+        
+        # Daily cost
+        if driver.get('daily_cost'):
+            ctk.CTkLabel(
+                left,
+                text=f"💰 {driver.get('daily_cost', 0):.2f} PLN/dzień",
+                font=("Arial", 11, "bold"),
+                text_color=config.COLORS["info"]
+            ).pack(anchor="w", pady=(5, 0))
+        
+        # Right: Actions
+        actions = ctk.CTkFrame(content, fg_color="transparent")
+        actions.pack(side="right")
+        
+        ctk.CTkButton(
+            actions,
+            text="Usuń",
+            command=lambda d=driver: self.delete_driver(d),
+            fg_color=config.COLORS["error"],
+            hover_color=config.COLORS["error"] + "CC",
+            width=100,
+            height=32
+        ).pack()
+    
+    def add_driver_clicked(self):
+        """Handle add driver button click"""
+        dialog = AddDriverDialog(self, self.on_driver_added)
+    
+    def on_driver_added(self, driver: Driver):
+        """Callback when driver is added"""
+        self.db.add_driver(driver)
+        self.load_data()
+        self.show_tab(self.current_tab)
+        messagebox.showinfo("Sukces", "Kierowca dodany!")
+    
+    def delete_driver(self, driver: dict):
+        """Delete driver"""
+        if messagebox.askyesno("Potwierdź", f"Czy na pewno usunąć kierowcę {driver.get('name', 'N/A')}?"):
+            self.db.delete_driver(driver['id'])
+            self.load_data()
+            self.show_tab(self.current_tab)
+            messagebox.showinfo("Sukces", "Kierowca usunięty!")
         
     def show_balance(self):
         """Show balance/statistics tab"""
